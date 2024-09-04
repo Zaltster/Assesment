@@ -73,19 +73,25 @@ const Dashboard = () => {
 
 
     return (
-        <div>
-            <h1>Dashboard</h1>
-            <div>
-                <h2>Line Chart</h2>
-                {lineChartData ? <Line data={lineChartData} /> : <p>Loading...</p>}
+        <div style={{ width: '100%', padding: '0 20px' }}>
+            <h1 style={{ textAlign: 'center', marginBottom: '40px' }}>Dashboard</h1>
+            <div style={{ marginBottom: '40px', textAlign: 'center' }}>
+                <h2 style={{ fontSize: '50px', marginBottom: '10px' }}>Line Chart</h2>
+                {lineChartData && <div style={{ width: '80%', maxWidth: '1200px', margin: '0 auto' }}>
+                    <Line data={lineChartData} />
+                </div>}
             </div>
-            <div>
-                <h2>Bar Chart</h2>
-                {barChartData ? <Bar data={barChartData} /> : <p>Loading...</p>}
+            <div style={{ marginBottom: '40px', textAlign: 'center' }}>
+                <h2 style={{ fontSize: '50px', marginBottom: '10px' }}>Bar Chart</h2>
+                {barChartData && <div style={{ width: '80%', maxWidth: '1200px', margin: '0 auto' }}>
+                    <Bar data={barChartData} />
+                </div>}
             </div>
-            <div>
-                <h2>Pie Chart</h2>
-                {pieChartData ? <Pie data={pieChartData} /> : <p>Loading...</p>}
+            <div style={{ textAlign: 'center' }}>
+                <h2 style={{ fontSize: '50px', marginBottom: '10px' }}>Pie Chart</h2>
+                {pieChartData && <div style={{ width: '80%', maxWidth: '1200px', margin: '0 auto' }}>
+                    <Pie data={pieChartData} />
+                </div>}
             </div>
         </div>
     );

@@ -41,15 +41,7 @@ def bar_chart_data(request):
 def pie_chart_data(request):
     data = {
         "labels": ["Red", "Blue", "Yellow"],
-        "datasets": [
-            {
-                "data": [300, 50, 100],
-                "backgroundColor": [
-                    "rgba(255, 99, 132, 0.2)",
-                    "rgba(54, 162, 235, 0.2)",
-                    "rgba(255, 206, 86, 0.2)"
-                ],
-            }
-        ]
+        "data": [300, 50, 100],
+            
     }
     return Response(data)
