@@ -128,11 +128,14 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+#allows for cross origin requests, which is necessary for the frontend to communicate with the backend
+# if you change the frontend URL in package.json, you will need to update this setting
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3015",
-    "http://127.0.0.1:3015",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
 ]
 
+# REST framework settings
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',

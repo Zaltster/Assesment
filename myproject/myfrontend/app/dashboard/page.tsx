@@ -1,18 +1,49 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { Line, Bar, Pie } from 'react-chartjs-2';
-import 'chart.js/auto';
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    Title,
+    Tooltip,
+    Legend,
+    BarElement,
+    LineElement,
+    PointElement,
+    ArcElement,
+    Filler,
+} from 'chart.js';
+import { Bar, Line, Pie } from 'react-chartjs-2';
+import Highcharts from 'highcharts/highstock';
+import HighchartsReact from 'highcharts-react-official';
 
-// Define types for the data you expect
-interface ChartData {
-    labels: string[];
-    data: number[];
+// Register components
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    Title,
+    Tooltip,
+    Legend,
+    BarElement,
+    LineElement,
+    PointElement,
+    ArcElement,
+    Filler
+);
+
+interface CandlestickData {
+    x: number; // Timestamp
+    open: number;
+    high: number;
+    low: number;
+    close: number;
 }
 
 const Dashboard = () => {
     const [lineChartData, setLineChartData] = useState<any>(null);
     const [barChartData, setBarChartData] = useState<any>(null);
     const [pieChartData, setPieChartData] = useState<any>(null);
+    const [candlestickOptions, setCandlestickOptions] = useState<any>(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -21,7 +52,6 @@ const Dashboard = () => {
                 const resLine = await fetch('http://127.0.0.1:8000/api/line-chart-data/');
                 if (!resLine.ok) throw new Error('Line chart data fetch failed');
                 const line = await resLine.json();
-                console.log('Line Chart Data:', line); // Log data
                 setLineChartData({
                     labels: line.labels,
                     datasets: [{
@@ -36,7 +66,6 @@ const Dashboard = () => {
                 const resBar = await fetch('http://127.0.0.1:8000/api/bar-chart-data/');
                 if (!resBar.ok) throw new Error('Bar chart data fetch failed');
                 const bar = await resBar.json();
-                console.log('Bar Chart Data:', bar); // Log data
                 setBarChartData({
                     labels: bar.labels,
                     datasets: [{
@@ -52,7 +81,6 @@ const Dashboard = () => {
                 const resPie = await fetch('http://127.0.0.1:8000/api/pie-chart-data/');
                 if (!resPie.ok) throw new Error('Pie chart data fetch failed');
                 const pie = await resPie.json();
-                console.log('Pie Chart Data:', pie); // Log data
                 setPieChartData({
                     labels: pie.labels,
                     datasets: [{
@@ -63,6 +91,47 @@ const Dashboard = () => {
                         borderWidth: 1,
                     }]
                 });
+
+                // Fetch Candlestick Chart Data
+                const resCandlestick = await fetch('http://127.0.0.1:8000/api/candlestick-data/');
+                if (!resCandlestick.ok) throw new Error('Candlestick chart data fetch failed');
+                const candlestick = await resCandlestick.json();
+                setCandlestickOptions({
+                    title: {
+                        text: 'Candlestick Chart'
+                    },
+                    series: [{
+                        type: 'candlestick',
+                        name: 'Candlestick',
+                        data: candlestick.data.map((item: CandlestickData) => [
+                            item.x, // Unix timestamp
+                            item.open,
+                            item.high,
+                            item.low,
+                            item.close
+                        ])
+                    }],
+                    xAxis: {
+                        type: 'datetime',
+                        title: {
+                            text: 'Date'
+                        }
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Price'
+                        }
+                    },
+                    plotOptions: {
+                        candlestick: {
+                            color: '#FF0000',
+                            upColor: '#00FF00',
+                            upLineColor: '#00FF00',
+                            lineColor: '#FF0000'
+                        }
+                    }
+                });
+
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -70,7 +139,6 @@ const Dashboard = () => {
 
         fetchData();
     }, []);
-
 
     return (
         <div style={{ width: '100%', padding: '0 20px' }}>
@@ -87,10 +155,16 @@ const Dashboard = () => {
                     <Bar data={barChartData} />
                 </div>}
             </div>
-            <div style={{ textAlign: 'center' }}>
+            <div style={{ marginBottom: '40px', textAlign: 'center' }}>
                 <h2 style={{ fontSize: '50px', marginBottom: '10px' }}>Pie Chart</h2>
                 {pieChartData && <div style={{ width: '80%', maxWidth: '1200px', margin: '0 auto' }}>
                     <Pie data={pieChartData} />
+                </div>}
+            </div>
+            <div style={{ textAlign: 'center' }}>
+                <h2 style={{ fontSize: '50px', marginBottom: '10px' }}>Candlestick Chart</h2>
+                {candlestickOptions && <div style={{ width: '80%', maxWidth: '1200px', margin: '0 auto' }}>
+                    <HighchartsReact highcharts={Highcharts} options={candlestickOptions} />
                 </div>}
             </div>
         </div>
