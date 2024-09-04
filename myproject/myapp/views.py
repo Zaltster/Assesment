@@ -1,11 +1,10 @@
+from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
-from rest_framework.views import APIView
+from django.http import HttpResponse
 
-@api_view(['GET'])
 def home(request):
-    return Response({"message": "Welcome to the Django API backend."})
+    return HttpResponse("Welcome to the Django API backend.")
 
 @api_view(['GET'])
 def hello_world(request):
@@ -42,6 +41,15 @@ def bar_chart_data(request):
 def pie_chart_data(request):
     data = {
         "labels": ["Red", "Blue", "Yellow"],
-        "data": [300, 50, 100]
+        "datasets": [
+            {
+                "data": [300, 50, 100],
+                "backgroundColor": [
+                    "rgba(255, 99, 132, 0.2)",
+                    "rgba(54, 162, 235, 0.2)",
+                    "rgba(255, 206, 86, 0.2)"
+                ],
+            }
+        ]
     }
     return Response(data)
